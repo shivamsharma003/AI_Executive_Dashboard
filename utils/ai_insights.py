@@ -1,16 +1,30 @@
+
+import streamlit as st
 from groq import Groq
 import os
-
-# Load from env or fallback to hardcoded key
-GROQ_API_KEY = os.environ.get(
-    "GROQ_API_KEY", "")
 
 
 def generate_insights(summary_text: str) -> str:
     """
     Send business KPI summary to Groq AI and get executive report back.
     """
-    client = Groq(api_key=GROQ_API_KEY)
+
+    # Load API key from Streamlit Secrets or environment variables
+    try:
+        GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+    except (KeyError, FileNotFoundError):
+        GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+
+    if not GROQ_API_KEY:
+        raise ValueError(
+            "Groq API key not found. Please configure GROQ_API_KEY in Streamlit Secrets."
+        )
+
+    client = Groq(
+        api_key=GROQ_API_KEY,
+        timeout=60.0,
+        max_retries=2
+    )
 
     prompt = f"""You are a senior business analyst and strategic consultant specializing in retail sales performance.
 
@@ -40,7 +54,7 @@ Use the actual numbers from the data in your report. Be specific and data-driven
 --- END ---"""
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=[
             {
                 "role": "system",
