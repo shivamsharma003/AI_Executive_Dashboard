@@ -1,4 +1,4 @@
-# 🏪 Superstore AI Executive Dashboard v3.0
+# 🏪 Superstore AI Executive Dashboard 
 
 Upload the Kaggle Superstore CSV → Auto cleaning → Full KPI analysis → AI executive report
 
